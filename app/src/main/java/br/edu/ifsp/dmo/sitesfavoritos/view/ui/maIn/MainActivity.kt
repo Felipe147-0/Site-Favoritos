@@ -47,6 +47,11 @@ class MainActivity : AppCompatActivity(), SiteItemClickListener {
         notifyAdapter()
     }
 
+    override fun clickDeleteSiteItem(position: Int) {
+        AlertDialog.Builder(this)
+            //finalizar
+    }
+
     // Configuração do listener do floatActionButton.
     private fun configListeners() {
         binding.buttonAdd.setOnClickListener { handleAddSite() }

@@ -48,4 +48,8 @@ SiteItemClickListener
     override fun getItemCount(): Int {
         return dataset.size
     }
+    fun removeItem(position: Int) {
+        dataset.removeAt(position)
+        notifyItemRemoved(position)
+    }
 }
