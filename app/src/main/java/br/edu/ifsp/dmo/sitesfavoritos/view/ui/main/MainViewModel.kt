@@ -26,11 +26,20 @@ class MainViewModel : ViewModel() {
     private val _deleteSite = MutableLiveData<Boolean>()
     val deleteSite: LiveData<Boolean> = _deleteSite
 
-    fun insertSite(apelido: String, url: String) {
-        val site = Site(apelido, url)
+    fun insertSite(Apelido: String, url: String) {
+        val site = Site(Apelido, url)
         dao.add(site)
         _insertSite.value = true
         load()
+    }
+
+    fun clickHeartSiteItem(position: Int) {
+        val sitesList = dao.getAll()
+        if (position in sitesList.indices) {
+            sitesList[position].favorito = !sitesList[position].favorito
+            _updateSite.value = true
+            load()  // Atualiza o LiveData
+        }
     }
 
     fun updateSite(position: Int) {

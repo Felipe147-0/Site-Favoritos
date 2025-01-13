@@ -59,6 +59,10 @@ class MainActivity : AppCompatActivity(), SiteItemClickListener {
         notifyAdapter()
     }
 
+    /*override fun clickHeartSiteItem(position: Int) {
+        viewModel.updateSite(position)
+    }*/
+
     override fun clickDeleteSiteItem(position: Int) {
         AlertDialog.Builder(this)
         val site = datasource[position]
@@ -89,31 +93,6 @@ class MainActivity : AppCompatActivity(), SiteItemClickListener {
         val adapter = binding.recyclerviewSites.adapter
         adapter?.notifyDataSetChanged()
     }
-
-   /* private fun handleAddSite() {
-
-        val tela = layoutInflater.inflate(R.layout.sites_dialog, null)
-        val bindingDialog: SitesDialogBinding = SitesDialogBinding.bind(tela)
-        // Configuração do AlertDialog
-        val builder = AlertDialog.Builder(this)
-            .setView(tela)
-            .setTitle(R.string.novo_site)
-            .setPositiveButton(R.string.salvar,
-                DialogInterface.OnClickListener { dialog, which ->
-                    // Salvar um site é incluir um objeto na lista,
-                    // e notificar o adapter que existe atualização.
-                    viewModel.insertSite(
-                        bindingDialog.edittextApelido.text.toString(),
-                        bindingDialog.edittextUrl.text.toString()
-                    )
-                })
-            .setNegativeButton(R.string.cancelar,
-                DialogInterface.OnClickListener { dialog, which ->
-                    dialog.dismiss()
-                })
-        val dialog = builder.create()
-        dialog.show()
-    }*/
 
     private fun handleAddSite() {
         val tela = layoutInflater.inflate(R.layout.sites_dialog, null)
