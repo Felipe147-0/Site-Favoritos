@@ -1,4 +1,4 @@
-package br.edu.ifsp.dmo.sitesfavoritos.view.ui.maIn
+package br.edu.ifsp.dmo.sitesfavoritos.view.ui.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,8 +26,8 @@ class MainViewModel : ViewModel() {
     private val _deleteSite = MutableLiveData<Boolean>()
     val deleteSite: LiveData<Boolean> = _deleteSite
 
-    fun insertSite(nickname: String, url: String) {
-        val site = Site(nickname, url)
+    fun insertSite(apelido: String, url: String) {
+        val site = Site(apelido, url)
         dao.add(site)
         _insertSite.value = true
         load()
@@ -41,14 +41,16 @@ class MainViewModel : ViewModel() {
     }
 
     fun clickDeleteSiteItem(position: Int) {
-        val site = dao.getAll()[position]
-        dao.remove(site)
-        _deleteSite.value = true
-        load()
+        if (position in 0 until dao.getAll().size) {
+            val site = dao.getAll()[position]
+            dao.remove(site)
+            _deleteSite.value = true
+            load()
+        }
 
     }
 
     private fun load() {
-        _sites.value = dao.getAll()
+        _sites.value = dao.getAll().toList()
     }
 }

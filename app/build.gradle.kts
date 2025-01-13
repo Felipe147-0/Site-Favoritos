@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "br.edu.ifsp.dmo.sitesfavoritos"
-        minSdk = 28
+        minSdk = 27
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -46,7 +46,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.room.common)
-    implementation(libs.androidx.room.common.jvm)
+    //implementation(libs.androidx.room.common.jvm)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -1,4 +1,4 @@
-package br.edu.ifsp.dmo.sitesfavoritos.view.ui.maIn
+package br.edu.ifsp.dmo.sitesfavoritos.view.ui.main
 
 import android.content.DialogInterface
 import android.content.Intent
@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity(), SiteItemClickListener {
 
     private lateinit var binding: ActivityMainBinding
     private var datasource = ArrayList<Site>()
+
     private lateinit var viewModel: MainViewModel
     private lateinit var adapter: SiteAdapter
 
@@ -89,7 +90,7 @@ class MainActivity : AppCompatActivity(), SiteItemClickListener {
         adapter?.notifyDataSetChanged()
     }
 
-    private fun handleAddSite() {
+   /* private fun handleAddSite() {
 
         val tela = layoutInflater.inflate(R.layout.sites_dialog, null)
         val bindingDialog: SitesDialogBinding = SitesDialogBinding.bind(tela)
@@ -105,6 +106,31 @@ class MainActivity : AppCompatActivity(), SiteItemClickListener {
                         bindingDialog.edittextApelido.text.toString(),
                         bindingDialog.edittextUrl.text.toString()
                     )
+                })
+            .setNegativeButton(R.string.cancelar,
+                DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                })
+        val dialog = builder.create()
+        dialog.show()
+    }*/
+
+    private fun handleAddSite() {
+        val tela = layoutInflater.inflate(R.layout.sites_dialog, null)
+        val bindingDialog: SitesDialogBinding = SitesDialogBinding.bind(tela)
+        val builder = AlertDialog.Builder(this)
+            .setView(tela)
+            .setTitle(R.string.novo_site)
+            .setPositiveButton(R.string.salvar,
+                DialogInterface.OnClickListener { dialog, which ->
+                    datasource.add(
+                        Site(
+                            bindingDialog.edittextApelido.text.toString(),
+                            bindingDialog.edittextUrl.text.toString()
+                        )
+                    )
+                    notifyAdapter()
+                    dialog.dismiss()
                 })
             .setNegativeButton(R.string.cancelar,
                 DialogInterface.OnClickListener { dialog, which ->
