@@ -10,7 +10,7 @@ import br.edu.ifsp.dmo.sitesfavoritos.databinding.ItemViewBinding
 import br.edu.ifsp.dmo.sitesfavoritos.view.ui.listeners.SiteItemClickListener
 import br.edu.ifsp.dmo.sitesfavoritos.view.data.model.Site
 
-class SiteAdapter(val context: Context, val dataset: List<Site>, val listener:
+class SiteAdapter(val context: Context, var dataset: List<Site>, val listener:
 SiteItemClickListener
 ) :
     RecyclerView.Adapter<SiteAdapter.ViewHolder>() {
@@ -30,8 +30,8 @@ SiteItemClickListener
         // Define dados do site na interface (item)
         holder.binding.textviewApelido.setText(item.apelido)
         holder.binding.textviewUrl.setText(item.url)
-        if(item.favorito){
 
+        if(item.favorito){
             holder.binding.imgHeart.setColorFilter(context.getColor(R.color.red))
         } else {
 
@@ -44,12 +44,15 @@ SiteItemClickListener
         // Clique no item da lista
 
         holder.binding.layoutItem.setOnClickListener{listener.clickSiteItem(position)}
+
+        holder.binding.imgTrash.setOnClickListener{listener.clickDeleteSiteItem(position)}
     }
     override fun getItemCount(): Int {
         return dataset.size
     }
-    fun removeItem(position: Int) {
-        dataset.removeAt(position)
-        notifyItemRemoved(position)
+
+
+    fun submitDataset(data: List<Site>){
+        dataset = data
     }
 }

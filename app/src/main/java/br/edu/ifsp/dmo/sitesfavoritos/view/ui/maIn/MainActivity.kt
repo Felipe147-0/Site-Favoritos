@@ -4,8 +4,11 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import br.edu.ifsp.dmo.sitesfavoritos.R
@@ -16,15 +19,23 @@ import br.edu.ifsp.dmo.sitesfavoritos.view.ui.listeners.SiteItemClickListener
 import br.edu.ifsp.dmo.sitesfavoritos.view.data.model.Site
 
 class MainActivity : AppCompatActivity(), SiteItemClickListener {
+
     private lateinit var binding: ActivityMainBinding
     private var datasource = ArrayList<Site>()
+    private lateinit var viewModel: MainViewModel
+    private lateinit var adapter: SiteAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
         configListeners()
         configRecyclerView()
+        configObservers()
     }
 
     // Método da interface SiteItemClickListener que é
@@ -43,13 +54,15 @@ class MainActivity : AppCompatActivity(), SiteItemClickListener {
     // usuário clicar sobre a imagem de coração.
     override fun clickHeartSiteItem(position: Int) {
         val site = datasource[position]
-        site.favorito = !site.favorito
+        viewModel
         notifyAdapter()
     }
 
     override fun clickDeleteSiteItem(position: Int) {
         AlertDialog.Builder(this)
-            //finalizar
+        val site = datasource[position]
+        handleDeleteSite(site)
+        notifyAdapter()
     }
 
     // Configuração do listener do floatActionButton.
@@ -88,12 +101,27 @@ class MainActivity : AppCompatActivity(), SiteItemClickListener {
                 DialogInterface.OnClickListener { dialog, which ->
                     // Salvar um site é incluir um objeto na lista,
                     // e notificar o adapter que existe atualização.
-                    datasource.add(
-                        Site(
-                            bindingDialog.edittextApelido.text.toString(),
-                            bindingDialog.edittextUrl.text.toString()
-                        )
+                    viewModel.insertSite(
+                        bindingDialog.edittextApelido.text.toString(),
+                        bindingDialog.edittextUrl.text.toString()
                     )
+                })
+            .setNegativeButton(R.string.cancelar,
+                DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                })
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun handleDeleteSite(site: Site) {
+        val tela = layoutInflater.inflate(R.layout.delete_site_dialog, null)
+        val builder = AlertDialog.Builder(this)
+            .setView(tela)
+            .setTitle(R.string.delete_site)
+            .setPositiveButton(R.string.delete,
+                DialogInterface.OnClickListener { dialog, which ->
+                    datasource.remove(site)
                     notifyAdapter()
                     dialog.dismiss()
                 })
@@ -103,5 +131,30 @@ class MainActivity : AppCompatActivity(), SiteItemClickListener {
                 })
         val dialog = builder.create()
         dialog.show()
+    }
+
+    private fun configObservers() {
+        viewModel.sites.observe(this, Observer {
+            adapter.submitDataset(it)
+        })
+
+        viewModel.insertSite.observe(this, Observer {
+            val str: String = if (it) {
+                getString(R.string.site_apelido)
+            } else {
+                getString(R.string.cancelar)
+            }
+            Toast.makeText(this, str, Toast.LENGTH_LONG).show()
+        })
+
+        viewModel.updateSite.observe(this, Observer {
+            if (it) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.site_apelido),
+                    Toast.LENGTH_SHORT)
+                    .show()
+            }
+        })
     }
 }
